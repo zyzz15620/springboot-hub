@@ -1,6 +1,6 @@
 package com.total650.springboot_hub.repository;
 
-import com.total650.springboot_hub.model.Post;
+import com.total650.springboot_hub.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostRepository extends JpaRepository<Post, Long> {

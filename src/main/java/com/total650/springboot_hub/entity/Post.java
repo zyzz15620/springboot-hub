@@ -1,4 +1,4 @@
-package com.total650.springboot_hub.model;
+package com.total650.springboot_hub.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
