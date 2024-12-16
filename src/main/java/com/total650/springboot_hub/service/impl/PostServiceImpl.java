@@ -6,7 +6,11 @@ import com.total650.springboot_hub.payload.PostDto;
 import com.total650.springboot_hub.repository.PostRepository;
 import com.total650.springboot_hub.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,9 +37,17 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
-        return posts.stream()
+    public List<PostDto> getAllPosts(int pageNo, int pageSize) {
+
+        // create Pageable instance
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+
+        Page<Post> posts = postRepository.findAll(pageable);
+
+        // get content for page object
+        List<Post> listOfPosts = posts.getContent();
+
+        return listOfPosts.stream()
                 .map(post -> mapToDTO(post))
                 .collect(Collectors.toList());
     }
@@ -57,6 +69,12 @@ public class PostServiceImpl implements PostService {
 
         Post updatedPost = postRepository.save(post);
         return mapToDTO(updatedPost);
+    }
+
+    @Override
+    public void deletePost(long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+        postRepository.delete(post);
     }
 
     private static PostDto mapToDTO(Post newPostEntity) {

@@ -27,8 +27,9 @@ public class PostController {
 
     // Get all posts
     @GetMapping
-    public List<PostDto> getAllPosts(){
-        return postService.getAllPosts();
+    public List<PostDto> getAllPosts(@RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+                                     @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize){
+        return postService.getAllPosts(pageNo, pageSize);
         // No need to return ResponseEntity<List<PostDto>> because status code default is 200 anyway
     }
 
@@ -43,5 +44,12 @@ public class PostController {
     public ResponseEntity<PostDto> updatePost(@RequestBody PostDto postDto, @PathVariable(name = "id") long id){
         PostDto responseDto = postService.updatePost(postDto, id);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    // Delete post by id
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePost(@PathVariable(name = "id") long id){
+        postService.deletePost(id);
+        return new ResponseEntity<>("Post entity deleted successfully.", HttpStatus.OK);
     }
 }
