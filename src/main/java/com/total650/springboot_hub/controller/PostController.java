@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.total650.springboot_hub.utils.AppConstants.*;
+
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
@@ -28,10 +30,10 @@ public class PostController {
 
     // Get all posts
     @GetMapping
-    public PostResponse getAllPosts(@RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
-                                    @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
-                                    @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
-                                    @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir){
+    public PostResponse getAllPosts(@RequestParam(value = "pageNo", defaultValue = DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+                                    @RequestParam(value = "pageSize", defaultValue = DEFAULT_PAGE_SIZE, required = false) int pageSize,
+                                    @RequestParam(value = "sortBy", defaultValue = DEFAULT_SORT_BY, required = false) String sortBy,
+                                    @RequestParam(value = "sortDir", defaultValue = DEFAULT_SORT_DIRECTION, required = false) String sortDir){
         return postService.getAllPosts(pageNo, pageSize, sortBy, sortDir);
         // No need to return ResponseEntity<List<PostDto>> because status code default is 200 anyway
     }
