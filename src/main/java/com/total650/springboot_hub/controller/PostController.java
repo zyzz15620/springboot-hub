@@ -20,7 +20,7 @@ public class PostController {
 
     // Create blog post
     @PostMapping
-    public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto){
+    public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto){  //@RequestBody automatically read Json to Object
         PostDto responseDto = postService.createPost(postDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
@@ -29,5 +29,19 @@ public class PostController {
     @GetMapping
     public List<PostDto> getAllPosts(){
         return postService.getAllPosts();
+        // No need to return ResponseEntity<List<PostDto>> because status code default is 200 anyway
+    }
+
+    // Get post by id
+    @GetMapping("/{id}")
+    public ResponseEntity<PostDto> getPostById(@PathVariable(name = "id") long id){
+        return ResponseEntity.ok(postService.getPostById(id));
+    }
+
+    // Update post by id
+    @PutMapping("/{id}")
+    public ResponseEntity<PostDto> updatePost(@RequestBody PostDto postDto, @PathVariable(name = "id") long id){
+        PostDto responseDto = postService.updatePost(postDto, id);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 }

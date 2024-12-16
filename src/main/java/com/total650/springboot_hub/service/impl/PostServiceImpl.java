@@ -1,6 +1,7 @@
 package com.total650.springboot_hub.service.impl;
 
 import com.total650.springboot_hub.entity.Post;
+import com.total650.springboot_hub.exception.ResourceNotFoundException;
 import com.total650.springboot_hub.payload.PostDto;
 import com.total650.springboot_hub.repository.PostRepository;
 import com.total650.springboot_hub.service.PostService;
@@ -9,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -38,6 +38,25 @@ public class PostServiceImpl implements PostService {
         return posts.stream()
                 .map(post -> mapToDTO(post))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public PostDto getPostById(long id) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+        return mapToDTO(post);
+    }
+
+    @Override
+    public PostDto updatePost(PostDto postDto, long id) {
+        // get post by id
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
+
+        post.setTitle(postDto.getTitle());
+        post.setDescription(postDto.getDescription());
+        post.setContent(postDto.getContent());
+
+        Post updatedPost = postRepository.save(post);
+        return mapToDTO(updatedPost);
     }
 
     private static PostDto mapToDTO(Post newPostEntity) {
