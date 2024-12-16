@@ -29,8 +29,9 @@ public class PostController {
     // Get all posts
     @GetMapping
     public PostResponse getAllPosts(@RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
-                                    @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize){
-        return postService.getAllPosts(pageNo, pageSize);
+                                    @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+                                    @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy){
+        return postService.getAllPosts(pageNo, pageSize, sortBy);
         // No need to return ResponseEntity<List<PostDto>> because status code default is 200 anyway
     }
 
