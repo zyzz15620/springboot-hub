@@ -10,6 +10,9 @@ import com.total650.springboot_hub.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
@@ -33,6 +36,16 @@ public class CommentServiceImpl implements CommentService {
         Comment newComment = commentRepository.save(comment);
 
         return mapToDto(newComment);
+    }
+
+    @Override
+    public List<CommentDto> getCommentsByPostId(long postId) {
+        postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+
+        // retrieve comments by postId
+        List<Comment> comments = commentRepository.findByPostId(postId);
+
+        return comments.stream().map(comment -> mapToDto(comment)).collect(Collectors.toList());
     }
 
     private CommentDto mapToDto(Comment comment){
