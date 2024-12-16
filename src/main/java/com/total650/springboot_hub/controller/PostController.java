@@ -1,6 +1,7 @@
 package com.total650.springboot_hub.controller;
 
 import com.total650.springboot_hub.payload.PostDto;
+import com.total650.springboot_hub.payload.PostResponse;
 import com.total650.springboot_hub.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,8 @@ public class PostController {
 
     // Get all posts
     @GetMapping
-    public List<PostDto> getAllPosts(@RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
-                                     @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize){
+    public PostResponse getAllPosts(@RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+                                    @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize){
         return postService.getAllPosts(pageNo, pageSize);
         // No need to return ResponseEntity<List<PostDto>> because status code default is 200 anyway
     }
