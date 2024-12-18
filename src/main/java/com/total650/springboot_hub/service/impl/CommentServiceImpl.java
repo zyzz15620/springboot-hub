@@ -2,12 +2,14 @@ package com.total650.springboot_hub.service.impl;
 
 import com.total650.springboot_hub.entity.Comment;
 import com.total650.springboot_hub.entity.Post;
+import com.total650.springboot_hub.exception.BlogAPIException;
 import com.total650.springboot_hub.exception.ResourceNotFoundException;
 import com.total650.springboot_hub.payload.CommentDto;
 import com.total650.springboot_hub.repository.CommentRepository;
 import com.total650.springboot_hub.repository.PostRepository;
 import com.total650.springboot_hub.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,6 +48,20 @@ public class CommentServiceImpl implements CommentService {
         List<Comment> comments = commentRepository.findByPostId(postId);
 
         return comments.stream().map(comment -> mapToDto(comment)).collect(Collectors.toList());
+    }
+
+    @Override
+    public CommentDto getCommentById(long postId, long commentId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
+
+        //Not only we check if the post and comment exit, but we also check if they are relate. In case someone send bad request.
+        if(!comment.getPost().getId().equals(post.getId())){
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to post: " + post.getTitle());
+        }
+
+        return mapToDto(comment);
     }
 
     private CommentDto mapToDto(Comment comment){
