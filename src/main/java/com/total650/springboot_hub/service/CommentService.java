@@ -5,9 +5,11 @@ import com.total650.springboot_hub.payload.CommentDto;
 import java.util.List;
 
 public interface CommentService {
-    CommentDto createComment(long postId, CommentDto commentDto);
+    CommentDto createComment(Long postId, CommentDto commentDto);
 
-    List<CommentDto> getCommentsByPostId(long postId);
+    List<CommentDto> getCommentsByPostId(Long postId);
 
-    CommentDto getCommentById(long postId, long commentId);
+    CommentDto getCommentById(Long postId, Long commentId);
+
+    CommentDto updateComment(Long postId, Long commentId, CommentDto commentRequest);
 }
