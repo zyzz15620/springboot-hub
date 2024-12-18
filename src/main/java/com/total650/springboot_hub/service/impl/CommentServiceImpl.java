@@ -29,14 +29,11 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDto createComment(Long postId, CommentDto commentDto) {
         Comment comment = mapToEntity(commentDto);
-
         // retrieve post entity by id
         Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
         comment.setPost(post);
-
         // comment entity save to DB
         Comment newComment = commentRepository.save(comment);
-
         return mapToDto(newComment);
     }
 
@@ -46,37 +43,31 @@ public class CommentServiceImpl implements CommentService {
 
         // retrieve comments by postId
         List<Comment> comments = commentRepository.findByPostId(postId);
-
         return comments.stream().map(comment -> mapToDto(comment)).collect(Collectors.toList());
     }
 
     @Override
     public CommentDto getCommentById(Long postId, Long commentId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
-
-        //Not only we check if the post and comment exit, but we also check if they are relate. In case someone send bad request.
-        if(!comment.getPost().getId().equals(post.getId())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to post: " + post.getTitle());
-        }
-
+        Comment comment = verifyAndGetComment(postId, commentId);
         return mapToDto(comment);
     }
 
     @Override
     public CommentDto updateComment(Long postId, Long commentId, CommentDto commentRequest) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
-        if(!comment.getPost().getId().equals(post.getId())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to post: " + post.getTitle());
-        }
-
+        // Create an updated entity
+        Comment comment = verifyAndGetComment(postId, commentId);
         comment.setName(commentRequest.getName());
         comment.setEmail(commentRequest.getEmail());
         comment.setBody(commentRequest.getBody());
-
+        // Update entity
         Comment updatedComment = commentRepository.save(comment);
         return mapToDto(updatedComment);
+    }
+
+    @Override
+    public void deleteComment(Long postId, Long commentId) {
+        Comment comment = verifyAndGetComment(postId, commentId);
+        commentRepository.delete(comment);
     }
 
     private CommentDto mapToDto(Comment comment){
@@ -94,6 +85,17 @@ public class CommentServiceImpl implements CommentService {
         comment.setEmail(commentDto.getEmail());
         comment.setName(commentDto.getName());
         comment.setBody(commentDto.getBody());
+        return comment;
+    }
+
+    private Comment verifyAndGetComment(Long postId, Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+
+        //Not only we check if the post and comment exit, but we also check if they are relate. In case someone send bad request.
+        if(!comment.getPost().getId().equals(post.getId())){
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to post: " + post.getTitle());
+        }
         return comment;
     }
 }
