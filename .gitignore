@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignore all .env files
+*.env
+
+# Ignore specific env file
+local.env
+
+# Allow an example env file (template for others)
+!example.env
