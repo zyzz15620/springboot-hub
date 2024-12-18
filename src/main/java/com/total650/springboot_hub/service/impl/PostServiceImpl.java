@@ -6,6 +6,7 @@ import com.total650.springboot_hub.payload.PostDto;
 import com.total650.springboot_hub.payload.PostResponse;
 import com.total650.springboot_hub.repository.PostRepository;
 import com.total650.springboot_hub.service.PostService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,10 +22,12 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
 
     private PostRepository postRepository;
+    private static ModelMapper mapper;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository) {
+    public PostServiceImpl(PostRepository postRepository, ModelMapper mapper) {
         this.postRepository = postRepository;
+        this.mapper = mapper;
     }
 
     @Override
@@ -93,19 +96,23 @@ public class PostServiceImpl implements PostService {
     }
 
     private static PostDto mapToDTO(Post newPostEntity) {
-        PostDto postDto = new PostDto();
-        postDto.setId(newPostEntity.getId());
-        postDto.setTitle(newPostEntity.getTitle());
-        postDto.setDescription(newPostEntity.getDescription());
-        postDto.setContent(newPostEntity.getContent());
+        PostDto postDto = mapper.map(newPostEntity, PostDto.class);
+
+//        PostDto postDto = new PostDto();
+//        postDto.setId(newPostEntity.getId());
+//        postDto.setTitle(newPostEntity.getTitle());
+//        postDto.setDescription(newPostEntity.getDescription());
+//        postDto.setContent(newPostEntity.getContent());
         return postDto;
     }
 
     private static Post mapToEntity(PostDto postDto) {
-        Post postEntity = new Post();
-        postEntity.setTitle(postDto.getTitle());
-        postEntity.setDescription(postDto.getDescription());
-        postEntity.setContent(postDto.getContent());
+        Post postEntity = mapper.map(postDto, Post.class);
+
+//        Post postEntity = new Post();
+//        postEntity.setTitle(postDto.getTitle());
+//        postEntity.setDescription(postDto.getDescription());
+//        postEntity.setContent(postDto.getContent());
         return postEntity;
     }
 }
