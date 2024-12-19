@@ -3,6 +3,7 @@ package com.total650.springboot_hub.controller;
 import com.total650.springboot_hub.payload.PostDto;
 import com.total650.springboot_hub.payload.PostResponse;
 import com.total650.springboot_hub.service.PostService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class PostController {
 
     // Create blog post
     @PostMapping
-    public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto){  //@RequestBody automatically read Json to Object
+    public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto){  //@RequestBody automatically read Json to Object
         PostDto responseDto = postService.createPost(postDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
@@ -44,7 +45,7 @@ public class PostController {
 
     // Update post by id
     @PutMapping("/{id}")
-    public ResponseEntity<PostDto> updatePost(@RequestBody PostDto postDto, @PathVariable(name = "id") long id){
+    public ResponseEntity<PostDto> updatePost(@Valid @RequestBody PostDto postDto, @PathVariable(name = "id") long id){
         PostDto responseDto = postService.updatePost(postDto, id);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
