@@ -2,7 +2,7 @@ package com.total650.springboot_hub.utils;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
-public class ConfigUtils {
+public class ConfigEnv {
     private static Dotenv dotenv;
 
     public static void loadEnv(){
