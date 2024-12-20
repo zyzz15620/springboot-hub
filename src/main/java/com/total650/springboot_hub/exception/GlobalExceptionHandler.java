@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import org.springframework.security.access.AccessDeniedException;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -64,4 +66,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
     //The reason why we want to override this method is we want to set BAD_STATUS http for Hibernate Validation
     //Without this is fine, but the Validator will always return code 500 when we put an Empty value to @Notnull for example
+
+    ///handle specific exceptions
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorDetails> handleAccessDeniedException(AccessDeniedException exception,
+                                                                    WebRequest webRequest){
+        ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(), webRequest.getDescription(false)); //false mean not full desc
+        return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+    }
 }

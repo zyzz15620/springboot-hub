@@ -6,6 +6,7 @@ import com.total650.springboot_hub.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.total650.springboot_hub.utils.AppConstants.*;
@@ -21,6 +22,7 @@ public class PostController {
     }
 
     // Create blog post
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto){  //@RequestBody automatically read Json to Object
         PostDto responseDto = postService.createPost(postDto);
@@ -44,6 +46,7 @@ public class PostController {
     }
 
     // Update post by id
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<PostDto> updatePost(@Valid @RequestBody PostDto postDto, @PathVariable(name = "id") long id){
         PostDto responseDto = postService.updatePost(postDto, id);
@@ -51,6 +54,7 @@ public class PostController {
     }
 
     // Delete post by id
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePost(@PathVariable(name = "id") Long id){
         postService.deletePost(id);
