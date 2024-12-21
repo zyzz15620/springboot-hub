@@ -7,6 +7,7 @@ import com.total650.springboot_hub.payload.LoginDto;
 import com.total650.springboot_hub.payload.RegisterDto;
 import com.total650.springboot_hub.repository.AccountRepository;
 import com.total650.springboot_hub.repository.RoleRepository;
+import com.total650.springboot_hub.security.JwtTokenProvider;
 import com.total650.springboot_hub.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,13 +28,15 @@ public class AuthServiceImpl implements AuthService {
     private AccountRepository accountRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public AuthServiceImpl(AuthenticationManager manager, AccountRepository accountRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public AuthServiceImpl(AuthenticationManager manager, AccountRepository accountRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
         this.manager = manager;
         this.accountRepository = accountRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -41,7 +44,9 @@ public class AuthServiceImpl implements AuthService {
         Authentication authentication = manager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsernameOrEmail(), loginDto.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return "User Logged-in successfully!.";
+
+        String token = jwtTokenProvider.generateToken(authentication);
+        return token;
     }
 
     @Override

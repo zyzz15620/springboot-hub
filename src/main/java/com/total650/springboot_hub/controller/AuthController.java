@@ -1,5 +1,6 @@
 package com.total650.springboot_hub.controller;
 
+import com.total650.springboot_hub.payload.JWTAuthResponse;
 import com.total650.springboot_hub.payload.LoginDto;
 import com.total650.springboot_hub.payload.RegisterDto;
 import com.total650.springboot_hub.service.AuthService;
@@ -24,9 +25,13 @@ public class AuthController {
 
     //Login REST API
     @PostMapping(value = {"/login", "/signin"})
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto){
-        String response = authService.login(loginDto);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<JWTAuthResponse> login(@RequestBody LoginDto loginDto){
+        String token = authService.login(loginDto);
+
+        JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
+        jwtAuthResponse.setAccessToken(token);
+
+        return ResponseEntity.ok(jwtAuthResponse);
     }
 
     //Register REST API
