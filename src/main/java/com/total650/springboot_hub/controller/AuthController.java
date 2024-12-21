@@ -18,7 +18,7 @@ public class AuthController {
 
     private AuthService authService;
 
-    //Don't need @Autowired, Same reason as CustomUserDetailsService
+    @Autowired
     public AuthController(AuthService authService) {
         this.authService = authService;
     }

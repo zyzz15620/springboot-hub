@@ -4,6 +4,7 @@ import com.total650.springboot_hub.payload.PostDto;
 import com.total650.springboot_hub.payload.PostResponse;
 import com.total650.springboot_hub.service.PostService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,7 +18,7 @@ public class PostController {
 
     private PostService postService;
 
-    //Don't need @Autowired, Same reason as CustomUserDetailsService
+    @Autowired
     public PostController(PostService postService) {
         this.postService = postService;
     }

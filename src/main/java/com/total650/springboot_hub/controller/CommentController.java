@@ -3,6 +3,7 @@ package com.total650.springboot_hub.controller;
 import com.total650.springboot_hub.payload.CommentDto;
 import com.total650.springboot_hub.service.CommentService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ public class CommentController {
 
     private CommentService commentService;
 
-    //Don't need @Autowired, Same reason as CustomUserDetailsService
+    @Autowired
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
     }
