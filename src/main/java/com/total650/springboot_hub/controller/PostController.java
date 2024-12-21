@@ -17,6 +17,7 @@ public class PostController {
 
     private PostService postService;
 
+    //Don't need @Autowired, Same reason as CustomUserDetailsService
     public PostController(PostService postService) {
         this.postService = postService;
     }

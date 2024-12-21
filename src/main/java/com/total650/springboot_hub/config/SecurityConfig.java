@@ -44,6 +44,7 @@ public class SecurityConfig {
                 authorizeHttpRequests((authorize) ->
                         //authorize.anyRequest().authenticated()). //Permit all users for every incoming Request
                         authorize.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                                .requestMatchers("/api/auth/**").permitAll() //All user can login
                                 .anyRequest().authenticated()). //Permit All users for any GET Requests
                 httpBasic(Customizer.withDefaults());
 

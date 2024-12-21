@@ -15,6 +15,7 @@ public class CommentController {
 
     private CommentService commentService;
 
+    //Don't need @Autowired, Same reason as CustomUserDetailsService
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
     }

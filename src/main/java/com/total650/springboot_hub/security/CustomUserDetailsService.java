@@ -18,7 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private AccountRepository accountRepository;
 
-    /// Autowired annotation is not needed because if a @Service class only has a single parameterized constructor, spring will automatically inject the dependency
+    /// Autowired annotation is not needed because if a @Service or @RestController class only has a single parameterized constructor, spring will automatically inject the dependency
     /// Autowired is needed when the constructor has more than 1 params like CommentService
     @Autowired
     public CustomUserDetailsService(AccountRepository accountRepository) {
