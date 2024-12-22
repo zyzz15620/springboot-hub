@@ -1,5 +1,7 @@
 package com.total650.springboot_hub;
 
+import com.total650.springboot_hub.entity.Role;
+import com.total650.springboot_hub.repository.RoleRepository;
 import com.total650.springboot_hub.utils.ConfigEnv;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -7,6 +9,8 @@ import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +33,7 @@ import java.lang.annotation.Inherited;
 				)
 		)
 )
-public class SpringbootHubApplication {
+public class SpringbootHubApplication  implements CommandLineRunner {
 
 	@Bean
 	public ModelMapper modelMapper(){
@@ -42,4 +46,19 @@ public class SpringbootHubApplication {
 		SpringApplication.run(SpringbootHubApplication.class, args);
 	}
 
+
+	//Insert Metadata to Table
+	@Autowired
+	private RoleRepository roleRepository;
+
+	@Override
+	public void run(String... args) throws Exception {
+		Role adminRole = new Role();
+		adminRole.setName("ROLE_ADMIN");
+		roleRepository.save(adminRole);
+
+		Role userRole = new Role();
+		userRole.setName("USER_ADMIN");
+		roleRepository.save(userRole);
+	}
 }
