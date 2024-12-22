@@ -1,5 +1,6 @@
 package com.total650.springboot_hub.service;
 
+import com.total650.springboot_hub.entity.Post;
 import com.total650.springboot_hub.payload.PostDto;
 import com.total650.springboot_hub.payload.PostResponse;
 
@@ -15,5 +16,7 @@ public interface PostService {
     PostDto updatePost(PostDto postDto, long id);
 
     void deletePost(long id);
+
+    List<PostDto> getPostsByCategoryId(Long categoryId);
 
 }
