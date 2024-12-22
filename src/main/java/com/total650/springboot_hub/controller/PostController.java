@@ -3,6 +3,10 @@ package com.total650.springboot_hub.controller;
 import com.total650.springboot_hub.payload.PostDto;
 import com.total650.springboot_hub.payload.PostResponse;
 import com.total650.springboot_hub.service.PostService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +20,7 @@ import static com.total650.springboot_hub.utils.AppConstants.*;
 
 @RestController
 @RequestMapping("/api/posts")
+@Tag(name = "CRUD REST APIs for Post Resource")
 public class PostController {
 
     private PostService postService;
@@ -25,7 +30,9 @@ public class PostController {
         this.postService = postService;
     }
 
-    // Create blog post
+    @Operation(summary = "Create Post REST API", description = "Create Post REST API is used to save post into database")
+    @ApiResponse(responseCode = "201", description = "Http Status 201 CREATED")
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto){  //@RequestBody automatically read Json to Object
@@ -33,7 +40,8 @@ public class PostController {
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
-    // Get all posts
+    @Operation(summary = "Get Posts REST API", description = "Get Posts REST API is used to get all posts from database, supporting pagination")
+    @ApiResponse(responseCode = "200", description = "Http Status 200 SUCCESS")
     @GetMapping
     public PostResponse getAllPosts(@RequestParam(value = "pageNo", defaultValue = DEFAULT_PAGE_NUMBER, required = false) int pageNo,
                                     @RequestParam(value = "pageSize", defaultValue = DEFAULT_PAGE_SIZE, required = false) int pageSize,
@@ -43,13 +51,16 @@ public class PostController {
         // No need to return ResponseEntity<List<PostDto>> because status code default is 200 anyway
     }
 
-    // Get post by id
+    @Operation(summary = "Get Post REST API", description = "Get Post REST API is used to get a single")
+    @ApiResponse(responseCode = "200", description = "Http Status 200 SUCCESS")
     @GetMapping("/{id}")
     public ResponseEntity<PostDto> getPostById(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok(postService.getPostById(id));
     }
 
-    // Update post by id
+    @Operation(summary = "Update Post REST API", description = "Update Post REST API is used to update a particular post")
+    @ApiResponse(responseCode = "200", description = "Http Status 200 SUCCESS")
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<PostDto> updatePost(@Valid @RequestBody PostDto postDto, @PathVariable(name = "id") long id){
@@ -57,7 +68,9 @@ public class PostController {
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-    // Delete post by id
+    @Operation(summary = "Delete Post REST API", description = "Delete Post REST API is used to delete a particular post")
+    @ApiResponse(responseCode = "200", description = "Http Status 200 SUCCESS")
+    @SecurityRequirement(name = "Bear Authentication")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePost(@PathVariable(name = "id") Long id){
@@ -65,7 +78,8 @@ public class PostController {
         return new ResponseEntity<>("Post entity deleted successfully.", HttpStatus.OK);
     }
 
-    // Get all posts by category
+    @Operation(summary = "Get Posts With Category REST API", description = "Get Post With Category REST API is used to get all posts that belong to a category")
+    @ApiResponse(responseCode = "200", description = "Http Status 200 SUCCESS")
     @GetMapping("/category/{id}")
     public ResponseEntity<List<PostDto>> getPostsByCategory(@PathVariable(name = "id") Long categoryId){
         List<PostDto> postDtoList = postService.getPostsByCategoryId(categoryId);

@@ -2,6 +2,8 @@ package com.total650.springboot_hub.config;
 
 import com.total650.springboot_hub.security.JwtAuthenticationEntryPoint;
 import com.total650.springboot_hub.security.JwtAuthenticationFilter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,6 +24,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableMethodSecurity //This is to enabled internal annotations like @PreAuthorize as we're using in PostController
+@SecurityScheme(
+        name = "Bear Authentication",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
 public class SecurityConfig {
 
     private UserDetailsService userDetailsService;
@@ -54,6 +62,8 @@ public class SecurityConfig {
                 authorizeHttpRequests((authorize) ->
                         //authorize.anyRequest().authenticated()). //Permit all users for every incoming Request
                         authorize.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                                .requestMatchers("/swagger-ui/**").permitAll()
+                                .requestMatchers("/v3/api-docs/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll() //All user can login
                                 .anyRequest().authenticated() //Permit All users for any GET Requests
                 ).httpBasic(Customizer.withDefaults()).exceptionHandling(exception ->
