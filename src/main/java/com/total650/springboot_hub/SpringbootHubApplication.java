@@ -1,6 +1,8 @@
 package com.total650.springboot_hub;
 
+import com.total650.springboot_hub.entity.Category;
 import com.total650.springboot_hub.entity.Role;
+import com.total650.springboot_hub.repository.CategoryRepository;
 import com.total650.springboot_hub.repository.RoleRepository;
 import com.total650.springboot_hub.utils.ConfigEnv;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
@@ -50,15 +52,45 @@ public class SpringbootHubApplication  implements CommandLineRunner {
 	//Insert Metadata to Table
 	@Autowired
 	private RoleRepository roleRepository;
+	@Autowired
+	CategoryRepository categoryRepository;
 
 	@Override
 	public void run(String... args) throws Exception {
 		Role adminRole = new Role();
 		adminRole.setName("ROLE_ADMIN");
 		roleRepository.save(adminRole);
-
 		Role userRole = new Role();
 		userRole.setName("USER_ADMIN");
 		roleRepository.save(userRole);
+
+		Category java = new Category();
+		java.setName("Java");
+		java.setDescription("Programming Language");
+		categoryRepository.save(java);
+		Category selenium = new Category();
+		selenium.setName("Selenium");
+		selenium.setDescription("Web Automation Testing Tool");
+		categoryRepository.save(selenium);
+		Category playwright = new Category();
+		playwright.setName("PlayWright");
+		playwright.setDescription("Web Automation Testing Tool");
+		categoryRepository.save(playwright);
+		Category appium = new Category();
+		appium.setName("Appium");
+		appium.setDescription("Mobile Automation Testing Tool");
+		categoryRepository.save(appium);
+		Category restAssured = new Category();
+		restAssured.setName("RestAssured");
+		restAssured.setDescription("API Automation Testing Tool");
+		categoryRepository.save(restAssured);
+		Category manual = new Category();
+		manual.setName("Manual");
+		manual.setDescription("Everything about Manual Testing");
+		categoryRepository.save(manual);
+		Category health = new Category();
+		health.setName("Health");
+		health.setDescription("Topic outside Testing");
+		categoryRepository.save(health);
 	}
 }

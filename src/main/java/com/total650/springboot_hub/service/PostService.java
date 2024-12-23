@@ -19,4 +19,6 @@ public interface PostService {
 
     List<PostDto> getPostsByCategoryId(Long categoryId);
 
+    List<PostDto> searchPosts(String query);
+
 }

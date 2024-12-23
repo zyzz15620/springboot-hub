@@ -85,4 +85,11 @@ public class PostController {
         List<PostDto> postDtoList = postService.getPostsByCategoryId(categoryId);
         return ResponseEntity.ok(postDtoList);
     }
+
+    @Operation(summary = "Get Posts By Query REST API", description = "Get Post With Query REST API is used to search all posts that the title or description contains query key")
+    @ApiResponse(responseCode = "200", description = "Http Status 200 SUCCESS")
+    @GetMapping("/search")
+    public ResponseEntity<List<PostDto>> searchPosts(@RequestParam String query){
+        return ResponseEntity.ok(postService.searchPosts(query)); // /search?query=selenium
+    }
 }
