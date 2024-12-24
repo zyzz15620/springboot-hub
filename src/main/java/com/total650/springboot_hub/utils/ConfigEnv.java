@@ -6,13 +6,13 @@ public class ConfigEnv {
     private static Dotenv dotenv;
 
     public static void loadEnv(){
-        String env = System.getenv("test.env");
+        String env = System.getenv("TEST_ENV");
         if(env==null){
             env = "local.env";
         }
         dotenv = Dotenv
                 .configure()
-                .directory("env")
+                .directory(Thread.currentThread().getContextClassLoader().getResource("env").getPath())
                 .filename(env)
                 .load();
 

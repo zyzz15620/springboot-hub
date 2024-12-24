@@ -2,10 +2,9 @@ package com.total650.springboot_hub;
 
 import com.total650.springboot_hub.entity.Category;
 import com.total650.springboot_hub.entity.Role;
+import com.total650.springboot_hub.repository.AccountRepository;
 import com.total650.springboot_hub.repository.CategoryRepository;
 import com.total650.springboot_hub.repository.RoleRepository;
-import com.total650.springboot_hub.utils.ConfigEnv;
-import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
@@ -16,8 +15,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import java.lang.annotation.Inherited;
 
 //@ComponentScan class will scan every @Bean method in this class or package/sub package
 @SpringBootApplication // This annotation = @Configuration + @ComponentScan + @EnableAutoConfiguration
@@ -44,7 +41,7 @@ public class SpringbootHubApplication  implements CommandLineRunner {
 	}
 
 	public static void main(String[] args) {
-		ConfigEnv.loadEnv();
+//		ConfigEnv.loadEnv();
 		SpringApplication.run(SpringbootHubApplication.class, args);
 	}
 
@@ -54,43 +51,37 @@ public class SpringbootHubApplication  implements CommandLineRunner {
 	private RoleRepository roleRepository;
 	@Autowired
 	CategoryRepository categoryRepository;
+	@Autowired
+	AccountRepository accountRepository;
 
 	@Override
 	public void run(String... args) throws Exception {
-		Role adminRole = new Role();
-		adminRole.setName("ROLE_ADMIN");
-		roleRepository.save(adminRole);
-		Role userRole = new Role();
-		userRole.setName("USER_ADMIN");
-		roleRepository.save(userRole);
+		addRoleMetadata("ROLE_ADMIN");
+		addRoleMetadata("ROLE_USER");
 
-		Category java = new Category();
-		java.setName("Java");
-		java.setDescription("Programming Language");
-		categoryRepository.save(java);
-		Category selenium = new Category();
-		selenium.setName("Selenium");
-		selenium.setDescription("Web Automation Testing Tool");
-		categoryRepository.save(selenium);
-		Category playwright = new Category();
-		playwright.setName("PlayWright");
-		playwright.setDescription("Web Automation Testing Tool");
-		categoryRepository.save(playwright);
-		Category appium = new Category();
-		appium.setName("Appium");
-		appium.setDescription("Mobile Automation Testing Tool");
-		categoryRepository.save(appium);
-		Category restAssured = new Category();
-		restAssured.setName("RestAssured");
-		restAssured.setDescription("API Automation Testing Tool");
-		categoryRepository.save(restAssured);
-		Category manual = new Category();
-		manual.setName("Manual");
-		manual.setDescription("Everything about Manual Testing");
-		categoryRepository.save(manual);
-		Category health = new Category();
-		health.setName("Health");
-		health.setDescription("Topic outside Testing");
-		categoryRepository.save(health);
+		addCategoryMetadata("Java", "Programming Language");
+		addCategoryMetadata("Selenium", "Web Automation Testing Tool");
+		addCategoryMetadata("PlayWright", "Web Automation Testing Tool");
+		addCategoryMetadata("Appium", "Mobile Automation Testing Tool");
+		addCategoryMetadata("RestAssured", "API Automation Testing Tool");
+		addCategoryMetadata("Manual", "Everything about Manual Testing");
+		addCategoryMetadata("Health", "Topic outside Testing");
+
+	}
+
+	private void addRoleMetadata(String ROLE_ADMIN) {
+		if (!roleRepository.existsByName(ROLE_ADMIN)) {
+			Role adminRole = new Role();
+			adminRole.setName(ROLE_ADMIN);
+			roleRepository.save(adminRole);
+		}
+	}
+	private void addCategoryMetadata(String categoryName, String categoryDesc) {
+		if (!categoryRepository.existsByName(categoryName)) {
+			Category java = new Category();
+			java.setName(categoryName);
+			java.setDescription(categoryDesc);
+			categoryRepository.save(java);
+		}
 	}
 }
