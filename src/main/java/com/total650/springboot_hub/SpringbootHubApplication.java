@@ -41,7 +41,6 @@ public class SpringbootHubApplication  implements CommandLineRunner {
 	}
 
 	public static void main(String[] args) {
-//		ConfigEnv.loadEnv();
 		SpringApplication.run(SpringbootHubApplication.class, args);
 	}
 
