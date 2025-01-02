@@ -1,6 +1,6 @@
 # AutoTestingHub Backend
 
-This is the backend for the **AutoTestingHub** project, developed using **Spring Boot**. The backend serves as the foundation for the **autotestinghub.org** platform, a knowledge-sharing hub for software testing professionals.
+This is the backend for the [**AutoTestingHub**](https://autotestinghub.org/) project, developed using **Spring Boot**. The backend serves as the foundation for the [**autotestinghub.org**](https://autotestinghub.org/) platform, a knowledge-sharing hub for software testing professionals.
 
 ## Features
 - Basic CRUD Resources:
