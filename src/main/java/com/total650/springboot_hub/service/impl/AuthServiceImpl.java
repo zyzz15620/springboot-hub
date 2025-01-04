@@ -73,4 +73,9 @@ public class AuthServiceImpl implements AuthService {
         accountRepository.save(account);
         return "User registered successfully!. ";
     }
+
+    @Override
+    public void delete(Long id) {
+        accountRepository.existsById(id);
+    }
 }

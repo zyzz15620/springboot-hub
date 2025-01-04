@@ -7,6 +7,7 @@ import com.total650.springboot_hub.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class AuthController {
     @Operation(summary = "Create JWT REST API", description = "Create JWT REST API is used to generate a JWT for login session")
     @ApiResponse(responseCode = "201", description = "Http Status 201 SUCCESS")
     @PostMapping(value = {"/login", "/signin"})
-    public ResponseEntity<JWTAuthResponse> login(@RequestBody LoginDto loginDto){
+    public ResponseEntity<JWTAuthResponse> login(@Valid @RequestBody LoginDto loginDto){
         String token = authService.login(loginDto);
 
         JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
@@ -42,7 +43,7 @@ public class AuthController {
     @Operation(summary = "Create Account REST API", description = "Create Account REST API is used register/signup an account")
     @ApiResponse(responseCode = "201", description = "Http Status 201 CREATED")
     @PostMapping(value = {"/register", "/signup"})
-    public ResponseEntity<String> register(@RequestBody RegisterDto registerDto){
+    public ResponseEntity<String> register(@Valid @RequestBody RegisterDto registerDto){
         String response = authService.register(registerDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
