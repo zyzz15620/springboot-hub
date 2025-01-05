@@ -28,15 +28,11 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @Operation(summary = "Create JWT REST API", description = "Create JWT REST API is used to generate a JWT for login session")
-    @ApiResponse(responseCode = "201", description = "Http Status 201 SUCCESS")
+    @Operation(summary = "Login User REST API", description = "Login User REST API is used to login user to the application")
+    @ApiResponse(responseCode = "200", description = "Http Status 200 SUCCESS")
     @PostMapping(value = {"/login", "/signin"})
-    public ResponseEntity<JWTAuthResponse> login(@Valid @RequestBody LoginDto loginDto){
-        String token = authService.login(loginDto);
-
-        JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
-        jwtAuthResponse.setAccessToken(token);
-
+    public ResponseEntity<JWTAuthResponse> login(@Valid @RequestBody LoginDto loginDto) {
+        JWTAuthResponse jwtAuthResponse = authService.login(loginDto);
         return ResponseEntity.ok(jwtAuthResponse);
     }
 

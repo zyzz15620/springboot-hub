@@ -5,6 +5,7 @@ import com.total650.springboot_hub.entity.Role;
 import com.total650.springboot_hub.exception.BlogAPIException;
 import com.total650.springboot_hub.payload.LoginDto;
 import com.total650.springboot_hub.payload.RegisterDto;
+import com.total650.springboot_hub.payload.JWTAuthResponse;
 import com.total650.springboot_hub.repository.AccountRepository;
 import com.total650.springboot_hub.repository.RoleRepository;
 import com.total650.springboot_hub.security.JwtTokenProvider;
@@ -17,6 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -40,13 +43,26 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String login(LoginDto loginDto) {
+    public JWTAuthResponse login(LoginDto loginDto) {
         Authentication authentication = manager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsernameOrEmail(), loginDto.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String token = jwtTokenProvider.generateToken(authentication);
-        return token;
+        
+        // Get user details for additional response info
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String role = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse("");
+
+        return new JWTAuthResponse(
+                token,
+                "Bearer",
+                role,
+                userDetails.getUsername()
+        );
     }
 
     @Override

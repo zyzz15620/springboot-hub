@@ -10,9 +10,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "JWTResponse Model Information")
+@Schema(description = "JWT Authentication Response")
 public class JWTAuthResponse {
+    @Schema(description = "Access token")
     private String accessToken;
+    @Schema(description = "Token type")
     private String tokenType = "Bearer";
-
+    @Schema(description = "User role")
+    private String role;
+    @Schema(description = "Username")
+    private String username;
 }
