@@ -1,8 +1,6 @@
 package com.total650.springboot_hub.controller;
 
-import com.total650.springboot_hub.payload.JWTAuthResponse;
-import com.total650.springboot_hub.payload.LoginDto;
-import com.total650.springboot_hub.payload.RegisterDto;
+import com.total650.springboot_hub.payload.*;
 import com.total650.springboot_hub.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,10 +9,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -42,5 +39,28 @@ public class AuthController {
     public ResponseEntity<String> register(@Valid @RequestBody RegisterDto registerDto){
         String response = authService.register(registerDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/profile")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bear Authentication")
+    public ResponseEntity<String> updateProfile(@Valid @RequestBody UpdateProfileDto updateProfileDto) {
+        String response = authService.updateProfile(updateProfileDto);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/change-password")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bear Authentication")
+    public ResponseEntity<String> changePassword(@Valid @RequestBody ChangePasswordDto changePasswordDto) {
+        String response = authService.changePassword(changePasswordDto);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/profile")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @SecurityRequirement(name = "Bear Authentication")
+    public ResponseEntity<AccountDto> getCurrentUser() {
+        return ResponseEntity.ok(authService.getCurrentUser());
     }
 }

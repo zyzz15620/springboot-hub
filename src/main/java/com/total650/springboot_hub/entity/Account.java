@@ -37,6 +37,9 @@ public class Account {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Column(columnDefinition = "LONGTEXT")
+    private String profilePicture;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "accounts_roles",
             joinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id"),
