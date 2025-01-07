@@ -13,8 +13,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Schema(description = "CategoryDto Model Information")
 public class CategoryDto {
-    @Schema(description = "Category id")
-    private Long id;
+//    @Schema(description = "Category id")
+//    private Long id;
     @Schema(description = "Category name")
     @NotEmpty(message = "Category name should not be null or empty")
     private String name;
