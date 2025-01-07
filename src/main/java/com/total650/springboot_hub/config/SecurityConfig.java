@@ -55,44 +55,26 @@ public class SecurityConfig {
         //This method will automatically get userDetailsService and passwordEncoder() to do database-authentication
     }
 
-    // @Bean
-    // SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    //     //Disable form login to only use Basic Authentication
-    //     http.csrf((csrf) -> csrf.disable()).
-    //             authorizeHttpRequests((authorize) ->
-    //                     // authorize.anyRequest().authenticated()). //Permit all users for every incoming Request
-    //                     authorize.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-    //                             .requestMatchers("/swagger-ui/**").permitAll()
-    //                             .requestMatchers("/v3/api-docs/**").permitAll()
-    //                             .requestMatchers("/api/auth/**").permitAll() //All user can login
-    //                             .anyRequest().authenticated() //Permit All users for any GET Requests
-    //             ).httpBasic(Customizer.withDefaults()).exceptionHandling(exception ->
-    //                     exception.authenticationEntryPoint(authenticationEntryPoint)
-    //             ).sessionManagement( session ->
-    //                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    //             );
-    //     http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
-    //     return http.build();
-    // }
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests((authorize) ->
-            authorize
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()  // Allow OPTIONS requests
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/swagger-ui/**").permitAll()
-                .requestMatchers("/v3/api-docs/**").permitAll()
-                .anyRequest().authenticated()
-        )
-        .httpBasic(Customizer.withDefaults());
-    
-    http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
-    
-    return http.build();
-}
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        //Disable form login to only use Basic Authentication
+        http.csrf((csrf) -> csrf.disable()).
+                authorizeHttpRequests((authorize) ->
+                        //authorize.anyRequest().authenticated()). //Permit all users for every incoming Request
+                        authorize.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                                .requestMatchers("/swagger-ui/**").permitAll()
+                                .requestMatchers("/v3/api-docs/**").permitAll()
+                                .requestMatchers("/api/auth/**").permitAll() //All user can login
+                                .anyRequest().authenticated() //Permit All users for any GET Requests
+                ).httpBasic(Customizer.withDefaults()).exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(authenticationEntryPoint)
+                ).sessionManagement( session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                );
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
 
 //    @Bean
 //    public UserDetailsService userDetailsService(){
