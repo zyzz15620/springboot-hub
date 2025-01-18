@@ -5,6 +5,7 @@ import com.total650.springboot_hub.payload.PostResponse;
 import com.total650.springboot_hub.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -93,15 +94,19 @@ public class PostController {
         return ResponseEntity.ok(postService.searchPosts(query)); // /search?query=selenium
     }
 
-    @Operation(summary = "Get Posts By User REST API", description = "Get Posts By User REST API is used to get all posts by a specific user")
-    @ApiResponse(responseCode = "200", description = "Http Status 200 SUCCESS")
+    @Operation(summary = "Get Posts By User", description = "Get all posts by a specific user with pagination and sorting")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Successfully retrieved posts"),
+        @ApiResponse(responseCode = "404", description = "User not found")
+    })
     @GetMapping("/user/{userId}")
     public PostResponse getPostsByUser(
         @PathVariable(value = "userId") Long userId,
         @RequestParam(defaultValue = DEFAULT_PAGE_NUMBER) int pageNo,
         @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int pageSize,
         @RequestParam(defaultValue = DEFAULT_SORT_BY) String sortBy,
-        @RequestParam(defaultValue = DEFAULT_SORT_DIRECTION) String sortDir) {
+        @RequestParam(defaultValue = DEFAULT_SORT_DIRECTION) String sortDir
+    ) {
         return postService.getPostsByUserId(userId, pageNo, pageSize, sortBy, sortDir);
     }
 }

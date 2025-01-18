@@ -40,14 +40,18 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto createPost(PostDto postDto) {
-        // Convert DTO to entity
-        Post post = mapToEntity(postDto);
-
         // Get current user
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Account account = accountRepository.findByUsernameOrEmail(username, username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username or email", username));
         
+        // Get category by id
+        Category category = categoryRepository.findById(postDto.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", postDto.getCategoryId()));
+        
+        // Convert DTO to entity after validating relationships
+        Post post = mapToEntity(postDto);
+        post.setCategory(category);
         post.setAccount(account);
         
         Post newPost = postRepository.save(post);
