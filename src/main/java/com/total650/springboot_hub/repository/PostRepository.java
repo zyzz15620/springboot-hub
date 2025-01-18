@@ -1,6 +1,8 @@
 package com.total650.springboot_hub.repository;
 
 import com.total650.springboot_hub.entity.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -16,4 +18,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     //JPQL query, the query uses class name, not table name
     @Query("SELECT p FROM Post p WHERE p.title LIKE CONCAT('%', :query, '%') OR p.description LIKE CONCAT('%', :query, '%')")
     List<Post> searchPosts(String query);
+
+    Page<Post> findByAccountId(Long accountId, Pageable pageable);
 }

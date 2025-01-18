@@ -63,4 +63,11 @@ public class AuthController {
     public ResponseEntity<AccountDto> getCurrentUser() {
         return ResponseEntity.ok(authService.getCurrentUser());
     }
+
+    @Operation(summary = "Get User Profile REST API", description = "Get User Profile REST API is used to get user's public information")
+    @ApiResponse(responseCode = "200", description = "Http Status 200 SUCCESS")
+    @GetMapping("/users/{id}")
+    public ResponseEntity<AccountDto> getUserProfile(@PathVariable(value = "id") Long userId) {
+        return ResponseEntity.ok(authService.getUserProfile(userId));
+    }
 }

@@ -21,4 +21,6 @@ public interface PostService {
 
     List<PostDto> searchPosts(String query);
 
+    PostResponse getPostsByUserId(Long userId, int pageNo, int pageSize, String sortBy, String sortDir);
+
 }

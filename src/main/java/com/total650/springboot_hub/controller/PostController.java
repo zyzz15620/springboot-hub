@@ -92,4 +92,16 @@ public class PostController {
     public ResponseEntity<List<PostDto>> searchPosts(@RequestParam String query){
         return ResponseEntity.ok(postService.searchPosts(query)); // /search?query=selenium
     }
+
+    @Operation(summary = "Get Posts By User REST API", description = "Get Posts By User REST API is used to get all posts by a specific user")
+    @ApiResponse(responseCode = "200", description = "Http Status 200 SUCCESS")
+    @GetMapping("/user/{userId}")
+    public PostResponse getPostsByUser(
+        @PathVariable(value = "userId") Long userId,
+        @RequestParam(defaultValue = DEFAULT_PAGE_NUMBER) int pageNo,
+        @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) int pageSize,
+        @RequestParam(defaultValue = DEFAULT_SORT_BY) String sortBy,
+        @RequestParam(defaultValue = DEFAULT_SORT_DIRECTION) String sortDir) {
+        return postService.getPostsByUserId(userId, pageNo, pageSize, sortBy, sortDir);
+    }
 }

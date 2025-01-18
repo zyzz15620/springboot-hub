@@ -19,4 +19,6 @@ public interface AuthService {
     void delete(Long id);
 
     AccountDto getCurrentUser();
+
+    AccountDto getUserProfile(Long userId);
 }

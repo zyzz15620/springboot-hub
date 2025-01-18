@@ -29,4 +29,7 @@ public class PostDto {
 
     @Schema(description = "Blog Post Category")
     private Long categoryId;
+
+    @Schema(description = "Post Author ID")
+    private Long accountId;
 }

@@ -204,4 +204,11 @@ public class AuthServiceImpl implements AuthService {
             
         return mapper.map(account, AccountDto.class);
     }
+
+    @Override
+    public AccountDto getUserProfile(Long userId) {
+        Account account = accountRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        return mapper.map(account, AccountDto.class);
+    }
 }

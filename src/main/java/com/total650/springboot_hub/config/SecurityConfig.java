@@ -56,23 +56,26 @@ public class SecurityConfig {
     }
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        //Disable form login to only use Basic Authentication
-        http.csrf((csrf) -> csrf.disable()).
-                authorizeHttpRequests((authorize) ->
-                        //authorize.anyRequest().authenticated()). //Permit all users for every incoming Request
-                        authorize.requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
-                                .requestMatchers("/swagger-ui/**").permitAll()
-                                .requestMatchers("/v3/api-docs/**").permitAll()
-                                .requestMatchers("/api/auth/**").permitAll() //All user can login
-                                .anyRequest().authenticated() //Permit All users for any GET Requests
-                ).httpBasic(Customizer.withDefaults()).exceptionHandling(exception ->
-                        exception.authenticationEntryPoint(authenticationEntryPoint)
-                ).sessionManagement( session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                );
-        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests((authorize) ->
+                authorize
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                    .requestMatchers("/api/auth/**").permitAll()
+                    .requestMatchers("/swagger-ui/**").permitAll()
+                    .requestMatchers("/v3/api-docs/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/**").permitAll()  // Allow all GET requests
+                    .anyRequest().authenticated()
+            )
+            .exceptionHandling(exception ->
+                exception.authenticationEntryPoint(authenticationEntryPoint)
+            )
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            );
 
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        
         return http.build();
     }
 

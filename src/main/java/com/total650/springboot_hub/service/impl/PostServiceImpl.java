@@ -1,10 +1,12 @@
 package com.total650.springboot_hub.service.impl;
 
+import com.total650.springboot_hub.entity.Account;
 import com.total650.springboot_hub.entity.Category;
 import com.total650.springboot_hub.entity.Post;
 import com.total650.springboot_hub.exception.ResourceNotFoundException;
 import com.total650.springboot_hub.payload.PostDto;
 import com.total650.springboot_hub.payload.PostResponse;
+import com.total650.springboot_hub.repository.AccountRepository;
 import com.total650.springboot_hub.repository.CategoryRepository;
 import com.total650.springboot_hub.repository.PostRepository;
 import com.total650.springboot_hub.service.PostService;
@@ -14,8 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,28 +28,32 @@ public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
     private static ModelMapper mapper;
     private CategoryRepository categoryRepository;
+    private AccountRepository accountRepository;
 
     @Autowired
-    public PostServiceImpl(PostRepository postRepository, ModelMapper mapper,CategoryRepository categoryRepository) {
+    public PostServiceImpl(PostRepository postRepository, ModelMapper mapper, CategoryRepository categoryRepository, AccountRepository accountRepository) {
         this.postRepository = postRepository;
         this.mapper = mapper;
         this.categoryRepository = categoryRepository;
+        this.accountRepository = accountRepository;
     }
 
     @Override
-    public PostDto createPost(PostDto postDto){
+    public PostDto createPost(PostDto postDto) {
+        // Convert DTO to entity
+        Post post = mapToEntity(postDto);
 
-        Category category = categoryRepository.findById(postDto.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", postDto.getCategoryId()));
-
-        // Received request body as DTO in PostController
-        // Now convert that DTO to Entity to save in database
-        Post postEntity = mapToEntity(postDto);
-        postEntity.setCategory(category);
-        Post newPostEntity = postRepository.save(postEntity); //now the newer entity got its ID back from database
-
-        // convert the newer entity back to DTO, but now we can choose to send back more or less info. In this case we add ID to response, check in mapToDTO()
-        return mapToDTO(newPostEntity);
+        // Get current user
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Account account = accountRepository.findByUsernameOrEmail(username, username)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "username or email", username));
+        
+        post.setAccount(account);
+        
+        Post newPost = postRepository.save(post);
+        
+        // Convert entity to DTO
+        return mapToDTO(newPost);
     }
 
     @Override
@@ -121,14 +127,38 @@ public class PostServiceImpl implements PostService {
         return posts.stream().map((post) -> mapToDTO(post)).collect(Collectors.toList());
     }
 
-    private static PostDto mapToDTO(Post newPostEntity) {
-        PostDto postDto = mapper.map(newPostEntity, PostDto.class);
+    @Override
+    public PostResponse getPostsByUserId(Long userId, int pageNo, int pageSize, String sortBy, String sortDir) {
+        Account account = accountRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+                
+        // Create Pageable instance
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        
+        Page<Post> posts = postRepository.findByAccountId(userId, pageable);
+        
+        // Get content for page object
+        List<Post> listOfPosts = posts.getContent();
+        
+        List<PostDto> content = listOfPosts.stream().map(post -> mapToDTO(post)).collect(Collectors.toList());
+        
+        PostResponse postResponse = new PostResponse();
+        postResponse.setContent(content);
+        postResponse.setPageNo(posts.getNumber());
+        postResponse.setPageSize(posts.getSize());
+        postResponse.setTotalElements(posts.getTotalElements());
+        postResponse.setTotalPages(posts.getTotalPages());
+        postResponse.setLast(posts.isLast());
+        
+        return postResponse;
+    }
 
-//        PostDto postDto = new PostDto();
-//        postDto.setId(newPostEntity.getId());
-//        postDto.setTitle(newPostEntity.getTitle());
-//        postDto.setDescription(newPostEntity.getDescription());
-//        postDto.setContent(newPostEntity.getContent());
+    private static PostDto mapToDTO(Post post) {
+        PostDto postDto = mapper.map(post, PostDto.class);
+        postDto.setAccountId(post.getAccount().getId());
         return postDto;
     }
 
